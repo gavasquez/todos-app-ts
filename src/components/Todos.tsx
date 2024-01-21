@@ -1,11 +1,7 @@
-interface Todo {
-    id: string,
-    title: string,
-    complete: boolean
-}
+import { type ListOfTodo } from "../type.d"
 
 interface Props {
-    todos: Todo[],
+    todos: ListOfTodo,
 }
 
 export const Todos = ({ todos }: Props) => {
