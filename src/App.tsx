@@ -1,6 +1,9 @@
 import { useState } from 'react';
 import { Todos } from './components/Todos';
-import { type TodoId, type Todo } from './type.d';
+import { type TodoId, type Todo, FilterValue, TodoTitle } from './type.d';
+import { TODO_FILTERS } from './consts';
+import { Footer } from './components/Footer';
+import { Header } from './components/Header';
 
 const mockTodos = [
   {
@@ -21,7 +24,10 @@ const mockTodos = [
 ];
 
 export const App = () => {
+  
   const [ todos, setTodos ] = useState( mockTodos );
+
+  const [ filterSelected, setFilterSelected ] = useState<FilterValue>( TODO_FILTERS.ALL );
 
   const handleRemove = ( { id }: TodoId ) => {
     const newTodos = todos.filter( todo => todo.id !== id );
@@ -41,12 +47,53 @@ export const App = () => {
     setTodos( newTodo );
   };
 
+  const handleFilterChange = ( filter: FilterValue ) => {
+    setFilterSelected( filter );
+  };
+
+  const handleRemoveAllCompleted = () => {
+    const filteredTodos = todos.filter( todo => !todo.completed );
+    setTodos( filteredTodos );
+  };
+
+  const handleAddTodo = ( { title }: TodoTitle ) => {
+
+    const newTodo = {
+      id: crypto.randomUUID(),
+      title,
+      completed: false
+    };
+
+    setTodos( [
+      ...todos,
+      newTodo
+    ] );
+  };
+
+
+  const activeCount = todos.filter( todo => !todo.completed ).length;
+  const completedCount = todos.length - activeCount;
+
+  const filterTodos = todos.filter( todo => {
+    if ( filterSelected === TODO_FILTERS.ACTIVE ) return !todo.completed;
+    if ( filterSelected === TODO_FILTERS.COMPLETED ) return todo.completed;
+    return todo;
+  } );
+
   return (
     <div className="todoapp">
+      <Header onAddTodo={ handleAddTodo } />
       <Todos
         onRemoveTodo={ handleRemove }
         onToggleCompleteTodo={ handleCompleted }
-        todos={ todos }
+        todos={ filterTodos }
+      />
+      <Footer
+        filterSelected={ filterSelected }
+        handleFilterChange={ handleFilterChange }
+        activeCount={ activeCount }
+        onClearCompleted={ handleRemoveAllCompleted }
+        completedCount={ completedCount }
       />
     </div>
   );

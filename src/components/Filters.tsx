@@ -1,17 +1,35 @@
-import { TODO_FILTERS, FOOTER_FILTERS_BUTTONS } from "../consts";
-
+import { FILTERS_BUTTONS } from "../consts";
+import { type FilterValue } from '../type.d';
 
 interface Props {
-  filterSelected: typeof TODO_FILTERS[ keyof typeof TODO_FILTERS ];
+  filterSelected: FilterValue;
+  onFilterChange: ( filter: FilterValue ) => void;
 }
 
-
 export const Filters = ( { filterSelected, onFilterChange }: Props ) => {
+
   return (
-    <ul>
-      <li>
-        <a></a>
-      </li>
+    <ul className='filters'>
+      {
+        Object.entries( FILTERS_BUTTONS ).map( ( [ key, { literal, href } ] ) => {
+          const isSelected = key === filterSelected;
+          const className = isSelected ? 'selected' : '';
+          return (
+            <li key={ key }>
+              <a
+                href={ href }
+                className={ className }
+                onClick={ ( event ) => {
+                  event.preventDefault();
+                  onFilterChange( key as FilterValue );
+                } }
+              >
+                { literal }
+              </a>
+            </li>
+          );
+        } )
+      }
     </ul>
   );
 };

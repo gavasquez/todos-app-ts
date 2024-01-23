@@ -4,7 +4,7 @@ export const TODO_FILTERS = {
   COMPLETED: 'completed'
 } as const;
 
-export const FOOTER_FILTERS_BUTTONS = {
+export const FILTERS_BUTTONS = {
   [ TODO_FILTERS.ALL ]: {
     literal: 'Todos',
     href: `/?filter=${ TODO_FILTERS.ALL }`
